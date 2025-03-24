@@ -4,7 +4,8 @@ import { CiSearch } from "react-icons/ci";
 import { CiCirclePlus } from "react-icons/ci";
 import {collection,getDocs} from 'firebase/firestore';
 import {db} from "./config/firebase";
-import {HiOutlineUserCircle} from 'react-icons/hi'
+import ContactCard from "./compenents/ContactCard";
+
 const App = () => {
 
   const  [contacts, setContacts] = useState([]);
@@ -52,14 +53,9 @@ const App = () => {
 
       <div>
         {
-          contacts.map((contcat) => 
-          <div key={contcat.id}>
-            <HiOutlineUserCircle />
-            <div><h2></h2>
-              <p></p>
-            </div>
-          </div>
-          )}
+          contacts.map((contcat) => (
+          <ContactCard key={contact.id} contact={contact}/>
+          ))}
       </div>
     </div>
   );
