@@ -5,10 +5,24 @@ import { CiCirclePlus } from "react-icons/ci";
 import {collection,getDocs} from 'firebase/firestore';
 import {db} from "./config/firebase";
 import ContactCard from "./compenents/ContactCard";
+import Modal from 'react-modal';
+
+
 
 const App = () => {
 
   const  [contacts, setContacts] = useState([]);
+
+  const [isOpen , setOpen] = useState(false);
+
+
+  const onOpen = () =>
+    {
+    setOpen(true);
+};
+  const onClose =() =>{
+    setOpen(false);
+  };
 
   useEffect(()=> {
     const getContacts = async() => {
@@ -33,8 +47,9 @@ const App = () => {
     getContacts();
   },[]);
 
-  return (
-    <div className="mx-auto max-w-[370px] px-4">
+  return  (
+  <>   
+     <div className="mx-auto max-w-[370px] px-4">
       <Navbar />
       <div className="flex gap-2">
       <div className="relative flex item-center">
@@ -51,13 +66,16 @@ const App = () => {
      
       </div>
 
-      <div>
+      <div className="mt-4  flex flex-col gap-3">
         {
-          contacts.map((contcat) => (
+          contacts.map((contact) => (
           <ContactCard key={contact.id} contact={contact}/>
           ))}
       </div>
     </div>
+    <Modal isOpen ={isOpen} onClose = {onClose} > Hi
+    </Modal>
+    </>
   );
 };
 
