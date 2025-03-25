@@ -6,6 +6,7 @@ import {collection,getDocs} from 'firebase/firestore';
 import {db} from "./config/firebase";
 import ContactCard from "./compenents/ContactCard";
 import Modal from 'react-modal';
+import AddAndUpdateContact from "./compenents/AddAndUpdateContact";
 
 
 
@@ -62,7 +63,7 @@ const App = () => {
         />
       </div>
      
-      <CiCirclePlus className="text-5xl cursor-pointer text-white" />
+      <CiCirclePlus className="text-5xl cursor-pointer text-white" onClick={onOpen} />
      
       </div>
 
@@ -73,7 +74,7 @@ const App = () => {
           ))}
       </div>
     </div>
-    
+    <AddAndUpdateContact onClose={onClose} isOpen={isOpen}/>
     </>
   );
 };
