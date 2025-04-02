@@ -5,9 +5,20 @@ import { IoMdTrash } from "react-icons/io";
 import { RiEditCircleLine } from "react-icons/ri";
 import {db} from "../config/firebase"
 import Modal from 'react-modal';
+import { useState } from "react";
 
 
 const ContactCard = ({ contact }) => {
+   const [isOpen , setOpen] = useState(false);
+  
+  
+    const onOpen = () =>
+      {
+      setOpen(true);
+  };
+    const onClose =() =>{
+      setOpen(false);
+    };
 
   const deleteContact = async(id) =>{
     try {
@@ -17,6 +28,7 @@ const ContactCard = ({ contact }) => {
     }
   };
   return (
+    <>
     <div
       key={contact.id}
       className="flex items-center justify-between rounded-lg bg-yellow p-2"
@@ -34,10 +46,10 @@ const ContactCard = ({ contact }) => {
       className="text-orange"/>
       </div>
     </div>
+
+
+  <AddAndUpdateContact isOpen={isOpen} onClose={onClose}/>
+</>
   );
 };
-
 export default ContactCard;
-
-
-
