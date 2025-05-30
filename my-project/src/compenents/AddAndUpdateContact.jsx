@@ -1,82 +1,99 @@
-import { ErrorMessage, Field, Form, Formik } from "formik";
-import Modal from "./Modal";
-import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
-import { db } from "../config/firebase";
-import { toast } from "react-toastify";
-import * as Yup from "yup";
+import Navbar from "./components/Navbar";
+import { FiSearch } from "react-icons/fi";
+import { AiFillPlusCircle } from "react-icons/ai";
+import { useEffect, useState } from "react";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "./config/firebase";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ContactCard from "./components/ContactCard";
+import AddAndUpdateContact from "./components/AddAndUpdateContact";
+import useDisclouse from "./hooks/useDisclouse";
+import NotFoundContact from "./components/NotFoundContact";
+const App = () => {
+  const [contacts, setContacts] = useState([]);
 
-const contactSchemaValidation = Yup.object().shape({
-  name: Yup.string().required("Name is Required"),
-  email: Yup.string().email("Invalid Email").required("Email is Required"),
-});
+  const { isOpen, onClose, onOpen } = useDisclouse();
 
-const AddAndUpdateContact = ({ isOpen, onClose, isUpdate, contact }) => {
-  const addContact = async (contact) => {
-    try {
-      const contactRef = collection(db, "contacts");
-      await addDoc(contactRef, contact);
-      onClose();
-      toast.success("Contact Added Successfully");
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const updateContact = async (contact, id) => {
-    try {
-      const contactRef = doc(db, "contacts", id);
-      await updateDoc(contactRef, contact);
-      onClose();
-      toast.success("Contact Updated Successfully");
-    } catch (error) {
-      console.log(error);
-    }
+  useEffect(() => {
+    const getContacts = async () => {
+      try {
+        const contactsRef = collection(db, "contacts");
+
+        onSnapshot(contactsRef, (snapshot) => {
+          const contactLists = snapshot.docs.map((doc) => {
+            return {
+              id: doc.id,
+              ...doc.data(),
+            };
+          });
+          setContacts(contactLists);
+          return contactLists;
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getContacts();
+  }, []);
+
+  const filterContacts = (e) => {
+    const value = e.target.value;
+
+    const contactsRef = collection(db, "contacts");
+
+    onSnapshot(contactsRef, (snapshot) => {
+      const contactLists = snapshot.docs.map((doc) => {
+        return {
+          id: doc.id,
+          ...doc.data(),
+        };
+      });
+
+      const filteredContacts = contactLists.filter((contact) =>
+        contact.name.toLowerCase().includes(value.toLowerCase())
+      );
+
+      setContacts(filteredContacts);
+
+      return filteredContacts;
+    });
   };
 
   return (
-    <div>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <Formik
-          validationSchema={contactSchemaValidation}
-          initialValues={
-            isUpdate
-              ? {
-                  name: contact.name,
-                  email: contact.email,
-                }
-              : {
-                  name: "",
-                  email: "",
-                }
-          }
-          onSubmit={(values) => {
-            console.log(values);
-            isUpdate ? updateContact(values, contact.id) : addContact(values);
-          }}
-        >
-          <Form className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1">
-              <label htmlFor="name">Name</label>
-              <Field name="name" className="h-10 border" />
-              <div className=" text-xs text-red-500">
-                <ErrorMessage name="name" />
-              </div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <label htmlFor="email">Email</label>
-              <Field name="email" className="h-10 border" />
-              <div className=" text-xs text-red-500">
-                <ErrorMessage name="email" />
-              </div>
-            </div>
+    <>
+      <div className="mx-auto max-w-[370px] px-4">
+        <Navbar />
+        <div className="flex gap-2">
+          <div className="relative flex flex-grow items-center">
+            <FiSearch className="absolute ml-1 text-3xl text-white" />
+            <input
+              onChange={filterContacts}
+              type="text"
+              className=" h-10 flex-grow rounded-md border border-white bg-transparent pl-9 text-white"
+            />
+          </div>
 
-            <button className="self-end border bg-orange px-3 py-1.5">
-              {isUpdate ? "update" : "add"} contact
-            </button>
-          </Form>
-        </Formik>
-      </Modal>
-    </div>
+          <AiFillPlusCircle
+            onClick={onOpen}
+            className="cursor-pointer text-5xl text-white"
+          />
+        </div>
+        <div className="mt-4 flex flex-col gap-3">
+          {contacts.length <= 0 ? (
+            <NotFoundContact />
+          ) : (
+            contacts.map((contact) => (
+              <ContactCard key={contact.id} contact={contact} />
+            ))
+          )}
+        </div>
+      </div>
+      <ToastContainer position="bottom-center" />
+      <AddAndUpdateContact onClose={onClose} isOpen={isOpen} />
+    </>
   );
 };
 
-export default AddAndUpdateContact;
+export default App;
