@@ -1,12 +1,21 @@
-# React + Vite
+A clean and simple contact manager built with React and Firebase. You can view your contacts, add new ones, and update existing details — all with a nice, minimal UI.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🧩 What it does
+Shows a list of contacts from Firebase Firestore
 
-Currently, two official plugins are available:
+Lets you add and edit contacts easily
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Has a built-in search bar (you can expand this later!)
 
-## Expanding the ESLint configuration
+Uses a modal for adding/editing, keeping the interface smooth
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Styled with Tailwind CSS for a modern look
+
+🛠️ Tech used
+⚛️ React (with hooks)
+
+🔥 Firebase Firestore (as database)
+
+🎨 Tailwind CSS
+
+🎯 React Icons
